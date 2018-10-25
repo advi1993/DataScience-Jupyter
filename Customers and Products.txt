@@ -1,0 +1,273 @@
+									SQL QUIERIES FOR ONLINE STORE DATABASE
+CREATE DATABASE online_store;
+CREATE TABLE Customer(cust_id INT NOT NULL AUTO_INCREMENT,first_name VARCHAR(100) NOT NULL,last_name VARCHAR(100) NOT NULL,email_id VARCHAR(300) NOT NULL,password VARCHAR(250) NOT NULL,mobile_no INT,address VARCHAR(500),PRIMARY KEY (cust_id));
+
+mysql> SHOW COLUMNS FROM Customer;
++------------+--------------+------+-----+---------+----------------+
+| Field      | Type         | Null | Key | Default | Extra          |
++------------+--------------+------+-----+---------+----------------+
+| cust_id    | int(11)      | NO   | PRI | NULL    | auto_increment |
+| first_name | varchar(100) | NO   |     | NULL    |                |
+| last_name  | varchar(100) | NO   |     | NULL    |                |
+| email_id   | varchar(300) | NO   |     | NULL    |                |
+| password   | varchar(250) | NO   |     | NULL    |                |
+| mobile_no  | int(11)      | YES  |     | NULL    |                |
+| address    | varchar(500) | YES  |     | NULL    |                |
++------------+--------------+------+-----+---------+----------------+
+CREATE TABLE products(id INT,name VARCHAR(300),price INT,size VARCHAR(100),color VARCHAR(200), PRIMARY KEY(id));
+SHOW COLUMNS FROM products;                                                                                                                                
++-------+--------------+------+-----+---------+----------------+
+| Field | Type         | Null | Key | Default | Extra          |
++-------+--------------+------+-----+---------+----------------+
+| id    | int(11)      | NO   | PRI | NULL    | auto_increment |
+| name  | varchar(300) | YES  |     | NULL    |                |
+| price | int(11)      | YES  |     | NULL    |                |
+| size  | varchar(100) | YES  |     | NULL    |                |
+| color | varchar(200) | YES  |     | NULL    |                |
++-------+--------------+------+-----+---------+----------------+
+
+CREATE TABLE purchase(id INT,user_account_id INT,date_ordered INT,date_required INT,status VARCHAR(200),PRIMARY KEY(id),FOREIGN KEY(user_account_id) REFERENCES Customer(cust_id));
+ SHOW COLUMNS FROM purchase;
++-----------------+--------------+------+-----+---------+-------+
+| Field           | Type         | Null | Key | Default | Extra |
++-----------------+--------------+------+-----+---------+-------+
+| id              | int(11)      | NO   | PRI | 0       |       |
+| user_account_id | int(11)      | YES  | MUL | NULL    |       |
+| date_ordered    | int(11)      | YES  |     | NULL    |       |
+| date_required   | int(11)      | YES  |     | NULL    |       |
+| status          | varchar(200) | YES  |     | NULL    |       |
++-----------------+--------------+------+-----+---------+-------+
+CREATE TABLE purchase_product
+(
+  purchase_id INT NOT NULL,
+  product_id INT NOT NULL,
+  no_of_items INT,
+  total_price INT,
+  PRIMARY KEY CLUSTERED (purchase_id, product_id),
+  FOREIGN KEY(purchase_id) REFERENCES purchase(id) ON UPDATE  NO ACTION  ON DELETE  CASCADE,
+  FOREIGN KEY(product_id) REFERENCES products(id) ON UPDATE  NO ACTION  ON DELETE  CASCADE
+);
+SHOW COLUMNS FROM purchase_product;
++-------------+---------+------+-----+---------+-------+
+| Field       | Type    | Null | Key | Default | Extra |
++-------------+---------+------+-----+---------+-------+
+| purchase_id | int(11) | NO   | PRI | NULL    |       |
+| product_id  | int(11) | NO   | PRI | NULL    |       |
+| no_of_items | int(11) | YES  |     | NULL    |       |
+| total_price | int(11) | YES  |     | NULL    |       |
++-------------+---------+------+-----+---------+-------+
+
+CREATE TABLE device(cu_id INT NOT NULL, device_type VARCHAR(300), PRIMARY KEY (cu_id),FOREIGN KEY (cu_id) REFERENCES Customer(cust_id));
+-------------+--------------+------+-----+---------+-------+
+| Field       | Type         | Null | Key | Default | Extra |
++-------------+--------------+------+-----+---------+-------+
+| cu_id       | int(11)      | NO   | PRI | NULL    |       |
+| device_type | varchar(300) | YES  |     | NULL    |       |
++-------------+--------------+------+-----+---------+-------+
+
+INSERT INTO Customer
+(cust_id, first_name, last_name, email_id, password, mobile_no, address)
+VALUES(001, 'ADI', 'VINOD', 'adi@gmail.com', 'abh', 7204274, 'EUCLID'),
+(002, 'VINOD', 'UNNI', 'vin@gmail.com', 'vin', 7204278, 'ADAMS'),
+(003, 'RAJANI', 'VINOD', 'raj@gmail.com', 'raj', 7204265, 'COLLEGEAVE'),
+(004, 'SAM', 'ADAMS', 'sam@gmail.com', 'sam', 7259940, 'RADISON'),
+(005, 'KELE', 'SMITH', 'kele@gmai.com', 'kele', 8941827, 'IRIS'),
+(006, 'JOHN', 'KRYUFF', 'john@msn.com', 'john', 7204385, 'ADAMS');
+
+UPDATE Customer SET mobile_no= 7204265 WHERE first_name= 'RAJANI';
+UPDATE Customer SET mobile_no= 7259940 WHERE first_name= 'SAM';
+UPDATE Customer SET mobile_no= 7204385 WHERE first_name= 'JOHN';
+
+SELECT* FROM Customer;
++---------+------------+-----------+---------------+----------+-----------+------------+
+| cust_id | first_name | last_name | email_id      | password | mobile_no | address    |
++---------+------------+-----------+---------------+----------+-----------+------------+
+|       1 | ADI        | VINOD     | adi@gmail.com | abh      |   7204274 | EUCLID     |
+|       2 | VINOD      | UNNI      | vin@gmail.com | vin      |   7204278 | ADAMS      |
+|       3 | RAJANI     | VINOD     | raj@gmail.com | raj      |   7204265 | COLLEGEAVE |
+|       4 | SAM        | ADAMS     | sam@gmail.com | sam      |   7259940 | RADISON    |
+|       5 | KELE       | SMITH     | kele@gmai.com | kele     |   8941827 | IRIS       |
+|       6 | JOHN       | KRYUFF    | john@msn.com  | john     |   7204385 | ADAMS      |
++---------+------------+-----------+---------------+----------+-----------+------------+
+INSERT INTO products
+(id, name, price, size, color)
+VALUES(1234, 'shirt', 38, 'M', 'nvay blue'),
+(1254, 'pants', 28, 'S', 'black'),
+(1236, 'shirt', 40, 'L', 'green'),
+(1135, 'shorts', 32, 'M', 'grey'),
+(1210, 'shoe', 42, 'L', 'black'),
+(5620, 'skirt', 30, 'M', 'blue'),
+(1975, 'mattress', 100, 'queen', 'white');
+
+mysql> SELECT*FROM products;
++------+----------+-------+-------+-----------+
+| id   | name     | price | size  | color     |
++------+----------+-------+-------+-----------+
+| 1135 | shorts   |    32 | M     | grey      |
+| 1210 | shoe     |    42 | L     | black     |
+| 1234 | shirt    |    38 | M     | nvay blue |
+| 1236 | shirt    |    40 | L     | green     |
+| 1254 | pants    |    28 | S     | black     |
+| 1975 | mattress |   100 | queen | white     |
+| 5620 | skirt    |    30 | M     | blue      |
++------+----------+-------+-------+-----------+
+
+INSERT INTO purchase
+(id, user_account_id, date_ordered, date_required, status)
+VALUES (2134, 4, '2018-01-12', '2018-1-14', 'cancel'),
+(2210, 2, '2018-2-3', '2018-2-17', 'delivered'),
+(2318, 1, '2018-3-3', '2018-3-14', 'delivered'),
+(2190, 4, '2018-3-10', '2018-3-11', 'cancel'),
+(2215, 3, '2018-3-12', '2018-3-24', 'delivered'),
+(2980, 5, '2018-4-1', '2018-4-3', 'cancel');
+
+mysql> ALTER TABLE purchase
+    -> ALTER COLUMN date_ordered DATE;
+    ALTER TABLE purchase 
+    MODIFY COLUMN date_required DATE;
+    
+    SELECT*FROM purchase;
++------+-----------------+--------------+---------------+-----------+
+| id   | user_account_id | date_ordered | date_required | status    |
++------+-----------------+--------------+---------------+-----------+
+| 2134 |               4 | 2018-01-12   | 2018-01-14    | cancel    |
+| 2190 |               4 | 2018-03-10   | 2018-03-11    | cancel    |
+| 2210 |               2 | 2018-02-03   | 2018-02-17    | delivered |
+| 2215 |               3 | 2018-03-12   | 2018-03-24    | delivered |
+| 2318 |               1 | 2018-03-03   | 2018-03-14    | delivered |
+| 2980 |               5 | 2018-04-01   | 2018-04-03    | cancel    |
++------+-----------------+--------------+---------------+-----------+
+
+INSERT INTO purchase_product
+(purchase_id, product_id, no_of_items, total_price),
+VALUES( 2980, 5620, 2, 60),
+(2318, 1975, 1, 100),
+(2134, 1135, 1, 32),
+(2190, 1236, 1, 40);
+
+
+INSERT INTO device
+(cu_id, device_type)
+VALUES (2, 'mobile'),
+(3, 'laptop'),
+(1, 'mobile'),
+(4, 'tablet'),
+(5, 'laptop');
+mysql> SELECT*FROM purchase_product;
++-------------+------------+-------------+-------------+
+| purchase_id | product_id | no_of_items | total_price |
++-------------+------------+-------------+-------------+
+|        2134 |       1135 |           1 |          32 |
+|        2190 |       1236 |           1 |          40 |
+|        2318 |       1975 |           1 |         100 |
+|        2980 |       5620 |           2 |          60 |
++-------------+------------+-------------+-------------+
+
+mysql> SELECT*FROM device;
++-------+-------------+
+| cu_id | device_type |
++-------+-------------+
+|     1 | mobile      |
+|     2 | mobile      |
+|     3 | laptop      |
+|     4 | tablet      |
+|     5 | laptop      |
++-------+-------------+
+
+
+SELECT cust_id, first_name, last_name, email_id
+FROM Customer 
+JOIN purchase
+ON Customer.cust_id= purchase. user_account_id;
+
++---------+------------+-----------+---------------+
+| cust_id | first_name | last_name | email_id      |
++---------+------------+-----------+---------------+
+|       1 | ADI        | VINOD     | adi@gmail.com |
+|       2 | VINOD      | UNNI      | vin@gmail.com |
+|       3 | RAJANI     | VINOD     | raj@gmail.com |
+|       4 | SAM        | ADAMS     | sam@gmail.com |
+|       4 | SAM        | ADAMS     | sam@gmail.com |
+|       5 | KELE       | SMITH     | kele@gmai.com |
++---------+------------+-----------+---------------+
+
+SELECT *
+FROM Customer
+LEFT JOIN purchase
+ON purchase.user_account_id = Customer.cust_id;
+
++---------+------------+-----------+---------------+----------+-----------+------------+------+-----------------+--------------+---------------+-----------+
+| cust_id | first_name | last_name | email_id      | password | mobile_no | address    | id   | user_account_id | date_ordered | date_required | status    |
++---------+------------+-----------+---------------+----------+-----------+------------+------+-----------------+--------------+---------------+-----------+
+|       1 | ADI        | VINOD     | adi@gmail.com | abh      |   7204274 | EUCLID     | 2318 |               1 | 2018-03-03   | 2018-03-14    | delivered |
+|       2 | VINOD      | UNNI      | vin@gmail.com | vin      |   7204278 | ADAMS      | 2210 |               2 | 2018-02-03   | 2018-02-17    | delivered |
+|       3 | RAJANI     | VINOD     | raj@gmail.com | raj      |   7204265 | COLLEGEAVE | 2215 |               3 | 2018-03-12   | 2018-03-24    | delivered |
+|       4 | SAM        | ADAMS     | sam@gmail.com | sam      |   7259940 | RADISON    | 2134 |               4 | 2018-01-12   | 2018-01-14    | cancel    |
+|       4 | SAM        | ADAMS     | sam@gmail.com | sam      |   7259940 | RADISON    | 2190 |               4 | 2018-03-10   | 2018-03-11    | cancel    |
+|       5 | KELE       | SMITH     | kele@gmai.com | kele     |   8941827 | IRIS       | 2980 |               5 | 2018-04-01   | 2018-04-03    | cancel    |
+|       6 | JOHN       | KRYUFF    | john@msn.com  | john     |   7204385 | ADAMS      | NULL |            NULL | NULL         | NULL          | NULL      |
++---------+------------+-----------+---------------+----------+-----------+------------+------+-----------------+--------------+---------------+-----------+
+
+SELECT *
+    -> FROM purchase
+    -> LEFT JOIN Customer
+    -> ON Customer.cust_id= purchase.user_account_id;
++------+-----------------+--------------+---------------+-----------+---------+------------+-----------+---------------+----------+-----------+------------+
+| id   | user_account_id | date_ordered | date_required | status    | cust_id | first_name | last_name | email_id      | password | mobile_no | address    |
++------+-----------------+--------------+---------------+-----------+---------+------------+-----------+---------------+----------+-----------+------------+
+| 2134 |               4 | 2018-01-12   | 2018-01-14    | cancel    |       4 | SAM        | ADAMS     | sam@gmail.com | sam      |   7259940 | RADISON    |
+| 2190 |               4 | 2018-03-10   | 2018-03-11    | cancel    |       4 | SAM        | ADAMS     | sam@gmail.com | sam      |   7259940 | RADISON    |
+| 2210 |               2 | 2018-02-03   | 2018-02-17    | delivered |       2 | VINOD      | UNNI      | vin@gmail.com | vin      |   7204278 | ADAMS      |
+| 2215 |               3 | 2018-03-12   | 2018-03-24    | delivered |       3 | RAJANI     | VINOD     | raj@gmail.com | raj      |   7204265 | COLLEGEAVE |
+| 2318 |               1 | 2018-03-03   | 2018-03-14    | delivered |       1 | ADI        | VINOD     | adi@gmail.com | abh      |   7204274 | EUCLID     |
+| 2980 |               5 | 2018-04-01   | 2018-04-03    | cancel    |       5 | KELE       | SMITH     | kele@gmai.com | kele     |   8941827 | IRIS       |
++------+-----------------+--------------+---------------+-----------+---------+------------+-----------+---------------+----------+-----------+------------+
+
+
+SELECT* 
+FROM purchase_product
+LEFT JOIN purchase
+ON purchase_product.purchase_id = purchase.id;
+
+
+
+
+
+
+
+
+
+
+
++-------------+------------+-------------+-------------+------+-----------------+--------------+---------------+-----------+
+| purchase_id | product_id | no_of_items | total_price | id   | user_account_id | date_ordered | date_required | status    |
++-------------+------------+-------------+-------------+------+-----------------+--------------+---------------+-----------+
+|        2134 |       1135 |           1 |          32 | 2134 |               4 | 2018-01-12   | 2018-01-14    | cancel    |
+|        2190 |       1236 |           1 |          40 | 2190 |               4 | 2018-03-10   | 2018-03-11    | cancel    |
+|        2318 |       1975 |           1 |         100 | 2318 |               1 | 2018-03-03   | 2018-03-14    | delivered |
+|        2980 |       5620 |           2 |          60 | 2980 |               5 | 2018-04-01   | 2018-04-03    | cancel    |
++-------------+------------+-------------+-------------+------+-----------------+--------------+---------------+-----------+
+
+SELECT* 
+FROM purchase_product
+LEFT JOIN purchase
+ON purchase_product.purchase_id = purchase.id
+INNER JOIN purchase_product
+ON purchase_product.co_id = Customer.cust_id;
+
+ALTER TABLE purchase_product
+ADD co_id INT,
+ADD CONSTRAINT FOREIGN KEY (co_id) REFERENCES Customer(cust_id);
+
+SELECT* FROM purchase_product
+ORDER BY total_price DESC;
+mysql> SELECT* FROM purchase_product
+    -> ORDER BY total_price DESC;
++-------------+------------+-------------+-------------+-------+
+| purchase_id | product_id | no_of_items | total_price | co_id |
++-------------+------------+-------------+-------------+-------+
+|        2318 |       1975 |           1 |         100 |  NULL |
+|        2980 |       5620 |           2 |          60 |  NULL |
+|        2190 |       1236 |           1 |          40 |  NULL |
+|        2134 |       1135 |           1 |          32 |  NULL |
++-------------+------------+-------------+-------------+-------+
